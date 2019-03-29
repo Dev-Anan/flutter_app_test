@@ -9,11 +9,11 @@ class ProductControl extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return RaisedButton(
-            color: Theme.of(context).primaryColor,
-            onPressed: () {
-              addProduct('Super Car');
-            },
-            child: Text('+ Image'),
-          );
+      color: Theme.of(context).primaryColor,
+      onPressed: () {
+        addProduct({'title': 'Honda', 'image': 'assets/car.jpg'});
+      },
+      child: Text('+ Image'),
+    );
   }
 }
