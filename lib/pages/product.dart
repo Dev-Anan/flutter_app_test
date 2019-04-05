@@ -11,8 +11,8 @@ class ProductPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () {
         print('Back buton pressed!');
-        // Navigator.pop(context, false);
-        return Future.value(true);
+        Navigator.pop(context, false);
+        return Future.value(false);
       },
       child: Scaffold(
         appBar: AppBar(
