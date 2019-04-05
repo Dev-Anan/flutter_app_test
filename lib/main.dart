@@ -14,14 +14,16 @@ class MyApp extends StatefulWidget {
     return _MyAppState();
   }
 }
-class _MyAppState extends State<MyApp> {
-  List<Map<String,String>> _products = [];
 
-  void _addProduct(Map<String, String> product) {
+class _MyAppState extends State<MyApp> {
+  List<Map<String, dynamic>> _products = [];
+
+  void _addProduct(Map<String, dynamic> product) {
     setState(() {
       _products.add(product);
-      });
+    });
   }
+
   void _deleteProduct(int index) {
     setState(() {
       _products.removeAt(index);
@@ -30,16 +32,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    
-    return MaterialApp( 
+    return MaterialApp(
       theme: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.deepOrange,
           accentColor: Colors.deepPurple),
       // home: AuthPage(),
       routes: {
-        '/' : (BuildContext context) => ProductsPage(_products,_addProduct,_deleteProduct),
-        '/admin' : (BuildContext context) => ProductsAdminPage(),
+        '/': (BuildContext context) => ProductsPage(_products),
+        '/admin': (BuildContext context) =>
+            ProductsAdminPage(_addProduct, _deleteProduct),
         // '/product' : (BuildContext context) => ProductsPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
@@ -49,16 +51,16 @@ class _MyAppState extends State<MyApp> {
         }
         if (pathElement[1] == 'product') {
           final int index = int.parse(pathElement[2]);
-          return MaterialPageRoute<bool>( builder: (BuildContext context) => ProductPage(
-                            _products[index]['title'], _products[index]['image']),);
-
+          return MaterialPageRoute<bool>(
+            builder: (BuildContext context) => ProductPage(
+                _products[index]['title'], _products[index]['image']),
+          );
         }
-        return null ;
-        
+        return null;
       },
       onUnknownRoute: (RouteSettings settings) {
-        return MaterialPageRoute(builder: (BuildContext context) => 
-        ProductsPage(_products, _addProduct, _deleteProduct));
+        return MaterialPageRoute(
+            builder: (BuildContext context) => ProductsPage(_products));
       },
     );
   }
