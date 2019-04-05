@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './products.dart';
+
 import './product_create.dart';
 import './product_list.dart';
 
@@ -19,10 +19,9 @@ class ProductsAdminPage extends StatelessWidget {
                 ListTile(
                   title: Text('All Products'),
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.pushReplacementNamed(
                       context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => ProductsPage()),
+                      '/'
                     );
                   },
                 )
@@ -44,10 +43,9 @@ class ProductsAdminPage extends StatelessWidget {
               ],
             ),
           ),
-          body: TabBarView(children: <Widget>[
-            ProductCreatePage(),
-            ProductListPage()
-          ],),
+          body: TabBarView(
+            children: <Widget>[ProductCreatePage(), ProductListPage()],
+          ),
         ));
   }
 }
