@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import './pages/auth.dart';
 import './pages/products.dart';
 import './pages/product.dart';
 import './pages/products_admin.dart';
@@ -36,10 +36,13 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.deepOrange,
-          accentColor: Colors.deepPurple),
-      // home: AuthPage(),
+          accentColor: Colors.deepPurple,
+          ),
+          
+     
       routes: {
-        '/': (BuildContext context) => ProductsPage(_products),
+        '/': (BuildContext context) => AuthPage(),
+        '/products': (BuildContext context) => ProductsPage(_products),
         '/admin': (BuildContext context) =>
             ProductsAdminPage(_addProduct, _deleteProduct),
         // '/product' : (BuildContext context) => ProductsPage(),

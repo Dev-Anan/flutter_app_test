@@ -11,7 +11,7 @@ class ProductPage extends StatelessWidget {
                     return AlertDialog(
                       title: Text('Are you sure?'),
                       content: Text('This action cannot be undone!'),
-                      actions: <Widget>[
+                      actions: <Widget>[ 
                         FlatButton(child: Text('DISCARD'), onPressed: () {
                           Navigator.pop(context);
                         
