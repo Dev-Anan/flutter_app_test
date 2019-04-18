@@ -9,7 +9,9 @@ class ProductsAdminPage extends StatelessWidget {
   final Function deleteProduct;
   final List<Map<String, dynamic>> products;
 
-  ProductsAdminPage(this.addProduct,this.updateProduct, this.deleteProduct, this.products);
+  ProductsAdminPage(
+      this.addProduct, this.updateProduct, this.deleteProduct, this.products);
+
   Widget _buildSideDrawer(BuildContext context) {
     return Drawer(
       child: Column(
@@ -33,30 +35,31 @@ class ProductsAdminPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          drawer: _buildSideDrawer(context),
-          appBar: AppBar(
-            title: Text('Manage Products'),
-            bottom: TabBar(
-              tabs: <Widget>[
-                Tab(
-                  icon: Icon(Icons.create),
-                  text: 'Create Product',
-                ),
-                Tab(
-                  icon: Icon(Icons.list),
-                  text: 'My Product',
-                )
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: <Widget>[
-              ProductEditPage(addProduct : addProduct),
-              ProductListPage(products, updateProduct)
+      length: 2,
+      child: Scaffold(
+        drawer: _buildSideDrawer(context),
+        appBar: AppBar(
+          title: Text('Manage Products'),
+          bottom: TabBar(
+            tabs: <Widget>[
+              Tab(
+                icon: Icon(Icons.create),
+                text: 'Create Product',
+              ),
+              Tab(
+                icon: Icon(Icons.list),
+                text: 'My Product',
+              )
             ],
           ),
-        ));
+        ),
+        body: TabBarView(
+          children: <Widget>[
+            ProductEditPage(addProduct: addProduct),
+            ProductListPage(products, updateProduct)
+          ],
+        ),
+      ),
+    );
   }
 }

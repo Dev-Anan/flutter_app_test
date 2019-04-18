@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../widgets/ui_elements/title_default.dart';
 
 class ProductPage extends StatelessWidget {
@@ -11,23 +13,26 @@ class ProductPage extends StatelessWidget {
   ProductPage(this.title, this.imageUrl, this.price, this.description);
 
   Widget _buildAddressPriceRow() {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-      Text(
-        'Siam Square, Bangkok Thailand',
-        style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
-      ),
-      Container(
-        margin: EdgeInsets.symmetric(horizontal: 5.0),
-        child: Text(
-          '|',
-          style: TextStyle(color: Colors.grey),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Siam Square, Bangkok Thailand',
+          style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
         ),
-      ),
-      Text(
-        '\$' + price.toString(),
-        style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
-      )
-    ]);
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 5.0),
+          child: Text(
+            '|',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+        Text(
+          '\$' + price.toString(),
+          style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
+        )
+      ],
+    );
   }
 
   @override
@@ -52,11 +57,12 @@ class ProductPage extends StatelessWidget {
             ),
             _buildAddressPriceRow(),
             Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  description,
-                  textAlign: TextAlign.center,
-                ))
+              padding: EdgeInsets.all(10.0),
+              child: Text(
+                description,
+                textAlign: TextAlign.center,
+              ),
+            )
           ],
         ),
       ),
