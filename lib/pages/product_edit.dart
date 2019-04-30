@@ -146,19 +146,19 @@ class _ProductEditPageState extends State<ProductEditPage> {
       addProduct(
         _formData['title'],
         _formData['description'],
-        _formData['price'],
         _formData['image'],
+        _formData['price'],
       );
     } else {
       updateProduct(
         _formData['title'],
         _formData['description'],
-        _formData['price'],
         _formData['image'],
+        _formData['price'],
       );
     }
-
-    Navigator.pushReplacementNamed(context, '/products')
+    Navigator
+        .pushReplacementNamed(context, '/products')
         .then((_) => setSelectedProduct(null));
   }
 
