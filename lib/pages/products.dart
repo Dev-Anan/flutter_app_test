@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
-import '../widgets/product/products.dart';
+import '../widgets/products/products.dart';
 import '../scoped-models/main.dart';
 
 class ProductsPage extends StatelessWidget {
@@ -16,7 +16,7 @@ class ProductsPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.edit),
-            title: Text('Manage Product'),
+            title: Text('Manage Products'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/admin');
             },
@@ -36,11 +36,11 @@ class ProductsPage extends StatelessWidget {
           ScopedModelDescendant<MainModel>(
             builder: (BuildContext context, Widget child, MainModel model) {
               return IconButton(
-                icon: Icon(model.displayFavoriteOnly
+                icon: Icon(model.displayFavoritesOnly
                     ? Icons.favorite
                     : Icons.favorite_border),
                 onPressed: () {
-                  model.toggledisplayMode();
+                  model.toggleDisplayMode();
                 },
               );
             },

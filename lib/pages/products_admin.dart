@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './product_Edit.dart';
+import './product_edit.dart';
 import './product_list.dart';
-import '../models/product.dart';
 
 class ProductsAdminPage extends StatelessWidget {
   Widget _buildSideDrawer(BuildContext context) {
@@ -41,8 +40,8 @@ class ProductsAdminPage extends StatelessWidget {
               ),
               Tab(
                 icon: Icon(Icons.list),
-                text: 'My Product',
-              )
+                text: 'My Products',
+              ),
             ],
           ),
         ),

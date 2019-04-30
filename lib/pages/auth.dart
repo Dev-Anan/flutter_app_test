@@ -119,10 +119,10 @@ class _AuthPageState extends State<AuthPage> {
                         return RaisedButton(
                           textColor: Colors.white,
                           child: Text('LOGIN'),
-                          onPressed:() => _submitForm(model.login),
+                          onPressed: () => _submitForm(model.login),
                         );
                       },
-                    )
+                    ),
                   ],
                 ),
               ),
