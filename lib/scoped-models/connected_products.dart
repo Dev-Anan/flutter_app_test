@@ -75,9 +75,41 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavorites;
   }
 
-  void updateProduct(
+  Future<Null> updateProduct(
       String title, String description, String image, double price) {
+    _isLoading = true;
+    notifyListeners();
+    final Map<String, dynamic> updateData = {
+      'title': title,
+      'description': description,
+      'image':
+          'http://www.headlightmag.com/hlmwp/wp-content/uploads/2018/11/new3_debut.jpg',
+      'price': price,
+      'userEmail': _authenticatedUser.email,
+      'userId': _authenticatedUser.id
+    };
+    return http
+        .put(
+            'https://flutter-my-test.firebaseio.com/products/${selectedProduct.id}.json',
+            body: json.encode(updateData))
+        .then((http.Response response) {
+      _isLoading = false;
+      
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Product updateProduct = Product(
+          id: responseData['name'],
+          title: title,
+          description: description,
+          image: image,
+          price: price,
+          userEmail: _authenticatedUser.email,
+          userId: _authenticatedUser.id);
+      _products[selectedProductIndex] = updateProduct;
+      notifyListeners();
+
+    });
     final Product updatedProduct = Product(
+        id: selectedProduct.id,
         title: title,
         description: description,
         image: image,
