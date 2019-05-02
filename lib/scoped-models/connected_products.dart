@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:scoped_model/scoped_model.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/product.dart';
 import '../models/user.dart';
@@ -10,6 +13,15 @@ mixin ConnectedProductsModel on Model {
 
   void addProduct(
       String title, String description, String image, double price) {
+    final Map<String, dynamic> productData = {
+      'title': title,
+      'description': description,
+      'image':
+          'http://www.headlightmag.com/hlmwp/wp-content/uploads/2018/11/new3_debut.jpg',
+      'price': price
+    };
+    http.post('https://flutter-my-test.firebaseio.com/products.json',
+        body: json.encode(productData));
     final Product newProduct = Product(
         title: title,
         description: description,
