@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,17 +19,22 @@ mixin ConnectedProductsModel on Model {
           'http://www.headlightmag.com/hlmwp/wp-content/uploads/2018/11/new3_debut.jpg',
       'price': price
     };
-    http.post('https://flutter-my-test.firebaseio.com/products.json',
-        body: json.encode(productData));
-    final Product newProduct = Product(
-        title: title,
-        description: description,
-        image: image,
-        price: price,
-        userEmail: _authenticatedUser.email,
-        userId: _authenticatedUser.id);
-    _products.add(newProduct);
-    notifyListeners();
+    http
+        .post('https://flutter-my-test.firebaseio.com/products.json',
+            body: json.encode(productData))
+        .then((http.Response response) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Product newProduct = Product(
+          id: responseData['name'],
+          title: title,
+          description: description,
+          image: image,
+          price: price,
+          userEmail: _authenticatedUser.email,
+          userId: _authenticatedUser.id);
+      _products.add(newProduct);
+      notifyListeners();
+    });
   }
 }
 
@@ -79,6 +83,13 @@ mixin ProductsModel on ConnectedProductsModel {
   void deleteProduct() {
     _products.removeAt(selectedProductIndex);
     notifyListeners();
+  }
+
+  void fetchProducts() {
+    http.get('https://flutter-my-test.firebaseio.com/products.json').then((http.Response response) {
+      print(json.decode(response.body));
+    });
+
   }
 
   void toggleProductFavoriteStatus() {
