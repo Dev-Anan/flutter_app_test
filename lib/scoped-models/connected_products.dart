@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,15 +10,19 @@ mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   int _selProductIndex;
   User _authenticatedUser;
+  bool _isLoading = false;
 
   void addProduct(
       String title, String description, String image, double price) {
+        _isLoading = true;
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
       'image':
           'http://www.headlightmag.com/hlmwp/wp-content/uploads/2018/11/new3_debut.jpg',
-      'price': price
+      'price': price,
+      'userEmail': _authenticatedUser.email,
+      'userId': _authenticatedUser.id
     };
     http
         .post('https://flutter-my-test.firebaseio.com/products.json',
@@ -33,6 +38,7 @@ mixin ConnectedProductsModel on Model {
           userEmail: _authenticatedUser.email,
           userId: _authenticatedUser.id);
       _products.add(newProduct);
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -86,10 +92,27 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   void fetchProducts() {
-    http.get('https://flutter-my-test.firebaseio.com/products.json').then((http.Response response) {
-      print(json.decode(response.body));
+    _isLoading = true;
+    http
+        .get('https://flutter-my-test.firebaseio.com/products.json')
+        .then((http.Response response) {
+      final List<Product> fetchedProductList = [];
+      final Map<String, dynamic> productListData = json.decode(response.body);
+      productListData.forEach((String productId, dynamic productData) {
+        final Product product = Product(
+            id: productId,
+            title: productData['title'],
+            description: productData['description'],
+            image: productData['image'],
+            price: productData['price'],
+            userEmail: productData['userEmail'],
+            userId: productData['userId']);
+        fetchedProductList.add(product);
+      });
+      _products = fetchedProductList;
+      _isLoading = false;
+      notifyListeners();
     });
-
   }
 
   void toggleProductFavoriteStatus() {
@@ -109,9 +132,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void selectProduct(int index) {
     _selProductIndex = index;
-    if (index != null) {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   void toggleDisplayMode() {
@@ -125,4 +146,12 @@ mixin UserModel on ConnectedProductsModel {
     _authenticatedUser =
         User(id: 'fdalsdfasf', email: email, password: password);
   }
+}
+
+mixin UtilityModel on ConnectedProductsModel {
+  bool get isLoading {
+    return _isLoading;
+  }
+  
+
 }
