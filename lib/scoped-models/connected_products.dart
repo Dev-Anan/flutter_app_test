@@ -9,7 +9,7 @@ import '../models/user.dart';
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
-  int _selProductIndex;
+  String _selProductId;
   User _authenticatedUser;
   bool _isLoading = false;
 
@@ -61,14 +61,23 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   int get selectedProductIndex {
-    return _selProductIndex;
+    return _products.indexWhere((Product product) {
+      return product.id == _selProductId;
+    });
+  }
+
+  String get selectedProductId {
+    return _selProductId;
   }
 
   Product get selectedProduct {
-    if (selectedProductIndex == null) {
+    if (selectedProductId == null) {
       return null;
     }
-    return _products[selectedProductIndex];
+    
+    return _products.firstWhere((Product product) {
+      return product.id == _selProductId;
+    });
   }
 
   bool get displayFavoritesOnly {
@@ -85,8 +94,8 @@ mixin ProductsModel on ConnectedProductsModel {
       'image':
           'http://www.headlightmag.com/hlmwp/wp-content/uploads/2018/11/new3_debut.jpg',
       'price': price,
-      'userEmail': _authenticatedUser.email,
-      'userId': _authenticatedUser.id
+      'userEmail': selectedProduct.userEmail,
+      'userId': selectedProduct.userId
     };
     return http
         .put(
@@ -94,41 +103,38 @@ mixin ProductsModel on ConnectedProductsModel {
             body: json.encode(updateData))
         .then((http.Response response) {
       _isLoading = false;
-      
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      final Product updateProduct = Product(
-          id: responseData['name'],
+      final Product updatedProduct = Product(
+          id: selectedProduct.id,
           title: title,
           description: description,
           image: image,
           price: price,
-          userEmail: _authenticatedUser.email,
-          userId: _authenticatedUser.id);
-      _products[selectedProductIndex] = updateProduct;
+          userEmail: selectedProduct.userEmail,
+          userId: selectedProduct.userId);
+      _products[selectedProductIndex] = updatedProduct;
       notifyListeners();
-
     });
-    final Product updatedProduct = Product(
-        id: selectedProduct.id,
-        title: title,
-        description: description,
-        image: image,
-        price: price,
-        userEmail: selectedProduct.userEmail,
-        userId: selectedProduct.userId);
-    _products[selectedProductIndex] = updatedProduct;
-    notifyListeners();
   }
 
   void deleteProduct() {
-    _products.removeAt(selectedProductIndex);
-    notifyListeners();
-  }
-
-  void fetchProducts() {
     _isLoading = true;
+    final deletedProductId = selectedProduct.id;
+    _products.removeAt(selectedProductIndex);
+    _selProductId = null;
     notifyListeners();
     http
+        .delete(
+            'https://flutter-my-test.firebaseio.com/products/${deletedProductId}.json')
+        .then((http.Response response) {
+      _isLoading = false;
+      notifyListeners();
+    });
+  }
+
+  Future<Null> fetchProducts() {
+    _isLoading = true;
+    notifyListeners();
+    return http
         .get('https://flutter-my-test.firebaseio.com/products.json')
         .then((http.Response response) {
       final List<Product> fetchedProductList = [];
@@ -152,6 +158,7 @@ mixin ProductsModel on ConnectedProductsModel {
       _products = fetchedProductList;
       _isLoading = false;
       notifyListeners();
+      _selProductId = null;
     });
   }
 
@@ -159,6 +166,7 @@ mixin ProductsModel on ConnectedProductsModel {
     final bool isCurrentlyFavorite = selectedProduct.isFavorite;
     final bool newFavoriteStatus = !isCurrentlyFavorite;
     final Product updatedProduct = Product(
+        id: selectedProduct.id,
         title: selectedProduct.title,
         description: selectedProduct.description,
         price: selectedProduct.price,
@@ -170,8 +178,8 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
   }
 
-  void selectProduct(int index) {
-    _selProductIndex = index;
+  void selectProduct(String productId) {
+    _selProductId = productId;
     notifyListeners();
   }
 
