@@ -21,7 +21,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-    final MainModel _model = MainModel();
+  final MainModel _model = MainModel();
 
   @override
   void initState() {
@@ -40,9 +40,8 @@ class _MyAppState extends State<MyApp> {
             accentColor: Colors.deepPurple,
             buttonColor: Colors.deepPurple),
         routes: {
-          '/': (BuildContext context) =>ScopedModelDescendant(builder: (BuildContext context, Widget child, MainModel model){
-            return model.user == null ?  AuthPage() : ProductsPage(_model);
-          },),  
+          '/': (BuildContext context) =>
+              _model.user == null ? AuthPage() : ProductsPage(_model),
           '/products': (BuildContext context) => ProductsPage(_model),
           '/admin': (BuildContext context) => ProductsAdminPage(_model),
         },
