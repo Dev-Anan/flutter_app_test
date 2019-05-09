@@ -26,7 +26,7 @@ class ProductsAdminPage extends StatelessWidget {
             },
           ),
           Divider(),
-          LogoutListTile(),
+          LogoutListTile()
         ],
       ),
     );

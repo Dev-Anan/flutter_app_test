@@ -178,7 +178,8 @@ mixin ProductsModel on ConnectedProductsModel {
             image: productData['image'],
             price: productData['price'],
             userEmail: productData['userEmail'],
-            userId: productData['userId']);
+            userId: productData['userId'],
+            isFavorite: productData['wishlistUsers'] == null ? false : (productData['wishlistUsers'] as Map<String ,dynamic>).containsKey(_authenticatedUser.id));
         fetchedProductList.add(product);
       });
       _products = fetchedProductList;
@@ -192,20 +193,31 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  void toggleProductFavoriteStatus() {
+  void toggleProductFavoriteStatus() async {
     final bool isCurrentlyFavorite = selectedProduct.isFavorite;
     final bool newFavoriteStatus = !isCurrentlyFavorite;
-    final Product updatedProduct = Product(
-        id: selectedProduct.id,
-        title: selectedProduct.title,
-        description: selectedProduct.description,
-        price: selectedProduct.price,
-        image: selectedProduct.image,
-        userEmail: selectedProduct.userEmail,
-        userId: selectedProduct.userId,
-        isFavorite: newFavoriteStatus);
-    _products[selectedProductIndex] = updatedProduct;
-    notifyListeners();
+    http.Response response;
+    if (newFavoriteStatus) {
+      response = await http.put(
+          'https://flutter-my-test.firebaseio.com/products/${selectedProduct.id}/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}',
+          body: json.encode(true));
+    } else {
+      response = await http.delete(
+          'https://flutter-my-test.firebaseio.com/products/${selectedProduct.id}/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}');
+    }
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final Product updatedProduct = Product(
+          id: selectedProduct.id,
+          title: selectedProduct.title,
+          description: selectedProduct.description,
+          price: selectedProduct.price,
+          image: selectedProduct.image,
+          userEmail: selectedProduct.userEmail,
+          userId: selectedProduct.userId,
+          isFavorite: newFavoriteStatus);
+      _products[selectedProductIndex] = updatedProduct;
+      notifyListeners();
+    }
   }
 
   void selectProduct(String productId) {
