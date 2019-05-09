@@ -156,7 +156,7 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  Future<Null> fetchProducts() {
+  Future<Null> fetchProducts({onlyForUser = false}) {
     _isLoading = true;
     notifyListeners();
     return http
@@ -179,10 +179,17 @@ mixin ProductsModel on ConnectedProductsModel {
             price: productData['price'],
             userEmail: productData['userEmail'],
             userId: productData['userId'],
-            isFavorite: productData['wishlistUsers'] == null ? false : (productData['wishlistUsers'] as Map<String ,dynamic>).containsKey(_authenticatedUser.id));
+            isFavorite: productData['wishlistUsers'] == null
+                ? false
+                : (productData['wishlistUsers'] as Map<String, dynamic>)
+                    .containsKey(_authenticatedUser.id));
         fetchedProductList.add(product);
       });
-      _products = fetchedProductList;
+      _products = onlyForUser
+          ? fetchedProductList.where((Product product) {
+              return product.userId == _authenticatedUser.id;
+            }).toList()
+          : fetchedProductList;
       _isLoading = false;
       notifyListeners();
       _selProductId = null;
@@ -196,6 +203,17 @@ mixin ProductsModel on ConnectedProductsModel {
   void toggleProductFavoriteStatus() async {
     final bool isCurrentlyFavorite = selectedProduct.isFavorite;
     final bool newFavoriteStatus = !isCurrentlyFavorite;
+    final Product updatedProduct = Product(
+        id: selectedProduct.id,
+        title: selectedProduct.title,
+        description: selectedProduct.description,
+        price: selectedProduct.price,
+        image: selectedProduct.image,
+        userEmail: selectedProduct.userEmail,
+        userId: selectedProduct.userId,
+        isFavorite: newFavoriteStatus);
+    _products[selectedProductIndex] = updatedProduct;
+    notifyListeners();
     http.Response response;
     if (newFavoriteStatus) {
       response = await http.put(
@@ -214,7 +232,7 @@ mixin ProductsModel on ConnectedProductsModel {
           image: selectedProduct.image,
           userEmail: selectedProduct.userEmail,
           userId: selectedProduct.userId,
-          isFavorite: newFavoriteStatus);
+          isFavorite: !newFavoriteStatus);
       _products[selectedProductIndex] = updatedProduct;
       notifyListeners();
     }
@@ -266,6 +284,7 @@ mixin UserModel on ConnectedProductsModel {
         headers: {'Content-Type': 'application/json'},
       );
     }
+
     final Map<String, dynamic> responseData = json.decode(response.body);
     bool hasError = true;
     String message = 'Something went wrong.';
@@ -287,10 +306,10 @@ mixin UserModel on ConnectedProductsModel {
       prefs.setString('userEmail', email);
       prefs.setString('userId', responseData['localId']);
       prefs.setString('expiryTime', expiryTime.toIso8601String());
-    } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
-      message = 'This email was not found.';
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
       message = 'This email already exists.';
+    } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
+      message = 'This email was not found.';
     } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
       message = 'The password is invalid.';
     }

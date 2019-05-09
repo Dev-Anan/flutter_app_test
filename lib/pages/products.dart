@@ -78,7 +78,9 @@ class _ProductsPageState extends State<ProductsPage> {
                     : Icons.favorite_border),
                 onPressed: () {
                   model.toggleDisplayMode();
+                 
                 },
+                
               );
             },
           )
