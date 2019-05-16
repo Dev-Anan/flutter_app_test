@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/helpers/ensure-visible.dart';
+import '../widgets/form_inputs/location.dart';
 import '../models/product.dart';
 import '../scoped-models/main.dart';
 
@@ -124,6 +125,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
               SizedBox(
                 height: 10.0,
               ),
+              LocationInput(),
+              SizedBox(
+                height: 10.0,
+              ),
               _buildSubmitButton(),
               // GestureDetector(
               //   onTap: _submitForm,
@@ -155,7 +160,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['price'],
       ).then((bool success) {
         if (success) {
-          Navigator.pushReplacementNamed(context, '/products')
+          Navigator
+              .pushReplacementNamed(context, '/products')
               .then((_) => setSelectedProduct(null));
         } else {
           showDialog(
@@ -163,11 +169,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text('Something went wrong'),
-                  content: Text('Please try again'),
+                  content: Text('Please try again!'),
                   actions: <Widget>[
                     FlatButton(
-                      child: Text('Okey'),
                       onPressed: () => Navigator.of(context).pop(),
+                      child: Text('Okay'),
                     )
                   ],
                 );
@@ -180,7 +186,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['description'],
         _formData['image'],
         _formData['price'],
-      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
+      ).then((_) => Navigator
+          .pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null)));
     }
   }
