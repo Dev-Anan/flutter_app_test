@@ -30,6 +30,12 @@
 	<string>User location is required to add a product location.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>User location is required to add a product location.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Image is used as a product image</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Use Camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Use Micrephone</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
