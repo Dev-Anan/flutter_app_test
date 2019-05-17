@@ -19,7 +19,7 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> {
   @override
   initState() {
-    widget.model.fetchProducts(onlyForUser : true);
+    widget.model.fetchProducts(onlyForUser: true);
     super.initState();
   }
 
@@ -34,7 +34,9 @@ class _ProductListPageState extends State<ProductListPage> {
               return ProductEditPage();
             },
           ),
-        );
+        ).then((_) {
+          model.selectProduct(null);
+        });
       },
     );
   }

@@ -9,6 +9,7 @@ import 'package:rxdart/subjects.dart';
 import '../models/product.dart';
 import '../models/user.dart';
 import '../models/auth.dart';
+import '../models/location_data.dart';
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
@@ -56,7 +57,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> addProduct(
-      String title, String description, String image, double price) async {
+      String title, String description, String image, double price, LocationData locData) async {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> productData = {
@@ -66,7 +67,10 @@ mixin ProductsModel on ConnectedProductsModel {
           'http://www.headlightmag.com/hlmwp/wp-content/uploads/2018/11/new3_debut.jpg',
       'price': price,
       'userEmail': _authenticatedUser.email,
-      'userId': _authenticatedUser.id
+      'userId': _authenticatedUser.id,
+      'loc_lat': locData.latitude,
+      'loc_lng': locData.longitude,
+      'loc_address': locData.address
     };
     try {
       final http.Response response = await http.post(
@@ -86,6 +90,7 @@ mixin ProductsModel on ConnectedProductsModel {
           description: description,
           image: image,
           price: price,
+          location: locData,
           userEmail: _authenticatedUser.email,
           userId: _authenticatedUser.id);
       _products.add(newProduct);
@@ -100,7 +105,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> updateProduct(
-      String title, String description, String image, double price) {
+      String title, String description, String image, double price, LocationData locData) {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> updateData = {
@@ -109,6 +114,9 @@ mixin ProductsModel on ConnectedProductsModel {
       'image':
           'http://www.headlightmag.com/hlmwp/wp-content/uploads/2018/11/new3_debut.jpg',
       'price': price,
+      'loc_lat': locData.latitude,
+      'loc_lng': locData.longitude,
+      'loc_address': locData.address,
       'userEmail': selectedProduct.userEmail,
       'userId': selectedProduct.userId
     };
@@ -124,6 +132,7 @@ mixin ProductsModel on ConnectedProductsModel {
           description: description,
           image: image,
           price: price,
+          location: locData,
           userEmail: selectedProduct.userEmail,
           userId: selectedProduct.userId);
       _products[selectedProductIndex] = updatedProduct;
@@ -177,6 +186,10 @@ mixin ProductsModel on ConnectedProductsModel {
             description: productData['description'],
             image: productData['image'],
             price: productData['price'],
+            location: LocationData(
+                address: productData['loc_address'],
+                latitude: productData['loc_lat'],
+                longitude: productData['loc_lng']),
             userEmail: productData['userEmail'],
             userId: productData['userId'],
             isFavorite: productData['wishlistUsers'] == null
@@ -209,6 +222,7 @@ mixin ProductsModel on ConnectedProductsModel {
         description: selectedProduct.description,
         price: selectedProduct.price,
         image: selectedProduct.image,
+        location: selectedProduct.location,
         userEmail: selectedProduct.userEmail,
         userId: selectedProduct.userId,
         isFavorite: newFavoriteStatus);
@@ -230,6 +244,7 @@ mixin ProductsModel on ConnectedProductsModel {
           description: selectedProduct.description,
           price: selectedProduct.price,
           image: selectedProduct.image,
+        location: selectedProduct.location,
           userEmail: selectedProduct.userEmail,
           userId: selectedProduct.userId,
           isFavorite: !newFavoriteStatus);
@@ -240,7 +255,9 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void selectProduct(String productId) {
     _selProductId = productId;
-    notifyListeners();
+    if (productId != null) {
+      notifyListeners();
+    }
   }
 
   void toggleDisplayMode() {

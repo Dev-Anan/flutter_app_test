@@ -6,6 +6,7 @@ import '../widgets/helpers/ensure-visible.dart';
 import '../widgets/form_inputs/location.dart';
 import '../models/product.dart';
 import '../scoped-models/main.dart';
+import '../models/location_data.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -19,20 +20,34 @@ class _ProductEditPageState extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image': 'assets/car.jpg'
+    'image': 'assets/car.jpg',
+    'location': null
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
+  final _titleTextController = TextEditingController();
 
   Widget _buildTitleTextField(Product product) {
+    if (product == null && _titleTextController.text.trim() == '') {
+      _titleTextController.text = '';
+    } else if (product != null && _titleTextController.text.trim() == '') {
+      _titleTextController.text = product.title;
+    } else if (product != null && _titleTextController.text.trim() != '') {
+      _titleTextController.text = _titleTextController.text;
+    } else if (product == null && _titleTextController.text.trim() != '') {
+      _titleTextController.text = _titleTextController.text;
+    } else {
+      _titleTextController.text = '';
+    }
     return EnsureVisibleWhenFocused(
       focusNode: _titleFocusNode,
       child: TextFormField(
         focusNode: _titleFocusNode,
         decoration: InputDecoration(labelText: 'Product Title'),
-        initialValue: product == null ? '' : product.title,
+        controller: _titleTextController,
+        // initialValue: product == null ? '' : product.title,
         validator: (String value) {
           if (value.isEmpty || value.length < 5) {
             return 'Title is required and should be 5+ characters long.';
@@ -125,7 +140,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               SizedBox(
                 height: 10.0,
               ),
-              LocationInput(),
+              LocationInput(_setLocation, product),
               SizedBox(
                 height: 10.0,
               ),
@@ -145,6 +160,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
+  void _setLocation(LocationData locData) {
+    _formData['location'] = locData;
+  }
+
   void _submitForm(
       Function addProduct, Function updateProduct, Function setSelectedProduct,
       [int selectedProductIndex]) {
@@ -154,15 +173,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
     _formKey.currentState.save();
     if (selectedProductIndex == -1) {
       addProduct(
-        _formData['title'],
+        _titleTextController.text, 
         _formData['description'],
-        _formData['image'],
-        _formData['price'],
-      ).then((bool success) {
+        _formData['image'], 
+        _formData['price'], 
+        _formData['location']).then((bool success) {
         if (success) {
           Navigator
-              .pushReplacementNamed(context, '/products')
-              .then((_) => setSelectedProduct(null));
+            .pushReplacementNamed(context, '/products')
+            .then((_) => setSelectedProduct(null));
         } else {
           showDialog(
               context: context,
@@ -182,10 +201,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
       });
     } else {
       updateProduct(
-        _formData['title'],
+        _titleTextController.text,
         _formData['description'],
         _formData['image'],
         _formData['price'],
+        _formData['location'],
       ).then((_) => Navigator
           .pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null)));
