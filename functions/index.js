@@ -31,9 +31,9 @@ exports.storeImage = functions.https.onRequest((req, res) => {
         }
 
         if (
-            !req.headers.authorization || 
+            !req.headers.authorization ||
             !req.headers.authorization.startsWith('Bearer ')
-            ) {
+        ) {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
 
@@ -80,7 +80,7 @@ exports.storeImage = functions.https.onRequest((req, res) => {
                 .then(() => {
                     return res.status(201).json({
                         imageUrl:
-                        'https://firebasestorage.googleapis.com/v0/b/' +
+                            'https://firebasestorage.googleapis.com/v0/b/' +
                             bucket.name +
                             '/o/' +
                             encodeURIComponent(imagePath) +
@@ -96,3 +96,13 @@ exports.storeImage = functions.https.onRequest((req, res) => {
         return busboy.end(req.rawBody);
     });
 });
+
+exports.deleteImage = functions.database
+.ref('/products/{productId}')
+.onDelete(snapshot => {
+    const imageData = snapshot.val();
+    const imagePath = imageData.imagePath;
+
+    const bucket = gcs.bucket('flutter-my-test.appspot.com');
+    return bucket.file(imagePath).delete();
+})
