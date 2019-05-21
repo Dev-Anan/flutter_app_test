@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
@@ -8,7 +10,6 @@ import '../widgets/form_inputs/image.dart';
 import '../models/product.dart';
 import '../scoped-models/main.dart';
 import '../models/location_data.dart';
-
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image': 'assets/car.jpg',
+    'image': null,
     'location': null
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -64,9 +65,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   Widget _buildDescriptionTextField(Product product) {
-     if (product == null && _descriptionTextController.text.trim() == '') {
+    if (product == null && _descriptionTextController.text.trim() == '') {
       _descriptionTextController.text = '';
-    } else if (product != null && _descriptionTextController.text.trim() == '') {
+    } else if (product != null &&
+        _descriptionTextController.text.trim() == '') {
       _descriptionTextController.text = product.description;
     }
     return EnsureVisibleWhenFocused(
@@ -153,7 +155,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               SizedBox(
                 height: 10.0,
               ),
-              ImageInput(),
+              ImageInput(_setImage, product),
 
               SizedBox(
                 height: 10.0,
@@ -178,24 +180,25 @@ class _ProductEditPageState extends State<ProductEditPage> {
     _formData['location'] = locData;
   }
 
+  void _setImage(File image) {
+    _formData['image'] = image;
+  }
+
   void _submitForm(
       Function addProduct, Function updateProduct, Function setSelectedProduct,
       [int selectedProductIndex]) {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState.validate() ||
+        (_formData['image'] == null && selectedProductIndex == -1)) {
       return;
     }
     _formKey.currentState.save();
     if (selectedProductIndex == -1) {
-      addProduct(
-        _titleTextController.text, 
-        _descriptionTextController.text,
-        _formData['image'], 
-        _formData['price'], 
-        _formData['location']).then((bool success) {
+      addProduct(_titleTextController.text, _descriptionTextController.text,
+              _formData['image'], _formData['price'], _formData['location'])
+          .then((bool success) {
         if (success) {
-          Navigator
-            .pushReplacementNamed(context, '/products')
-            .then((_) => setSelectedProduct(null));
+          Navigator.pushReplacementNamed(context, '/products')
+              .then((_) => setSelectedProduct(null));
         } else {
           showDialog(
               context: context,
@@ -220,8 +223,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['image'],
         _formData['price'],
         _formData['location'],
-      ).then((_) => Navigator
-          .pushReplacementNamed(context, '/products')
+      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null)));
     }
   }
