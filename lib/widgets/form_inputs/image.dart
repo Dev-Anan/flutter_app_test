@@ -35,35 +35,31 @@ class _ImageInputState extends State<ImageInput> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  'Pick an Image',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                FlatButton(
-                  textColor: Theme.of(context).primaryColor,
-                  child: Text('Use Camera'),
-                  onPressed: () {
-                    _getImage(context, ImageSource.camera);
-                  },
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                FlatButton(
-                  textColor: Theme.of(context).primaryColor,
-                  child: Text('Use Gallery'),
-                  onPressed: () {
-                    _getImage(context, ImageSource.gallery);
-                  },
-                ),
-              ],
-            ),
+            height: 150.0,
+            padding: EdgeInsets.all(10.0),
+            child: Column(children: [
+              Text(
+                'Pick an Image',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              FlatButton(
+                textColor: Theme.of(context).primaryColor,
+                child: Text('Use Camera'),
+                onPressed: () {
+                  _getImage(context, ImageSource.camera);
+                },
+              ),
+              FlatButton(
+                textColor: Theme.of(context).primaryColor,
+                child: Text('Use Gallery'),
+                onPressed: () {
+                  _getImage(context, ImageSource.gallery);
+                },
+              )
+            ]),
           );
         });
   }
@@ -102,7 +98,7 @@ class _ImageInputState extends State<ImageInput> {
           height: 10.0,
         ),
         _imageFile == null
-            ? Text('Please pick an image')
+            ? Text('Please pick an image.')
             : Image.file(
                 _imageFile,
                 fit: BoxFit.cover,
