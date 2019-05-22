@@ -6,7 +6,7 @@ import 'package:map_view/map_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart' as geoloc;
 
-import '../helpers/ensure-visible.dart';
+import '../helpers/ensure_visible.dart';
 import '../../models/location_data.dart';
 import '../../models/product.dart';
 

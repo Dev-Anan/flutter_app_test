@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
-import '../widgets/helpers/ensure-visible.dart';
+import '../widgets/helpers/ensure_visible.dart';
 import '../widgets/form_inputs/location.dart';
 import '../widgets/form_inputs/image.dart';
 import '../models/product.dart';
