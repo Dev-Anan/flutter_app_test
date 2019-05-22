@@ -9,6 +9,7 @@ import 'package:location/location.dart' as geoloc;
 import '../helpers/ensure_visible.dart';
 import '../../models/location_data.dart';
 import '../../models/product.dart';
+import '../../shared/global_config.dart';
 
 class LocationInput extends StatefulWidget {
   final Function setLocation;
@@ -56,7 +57,7 @@ class _LocationInputState extends State<LocationInput> {
       final Uri uri = Uri.https(
         'maps.googleapis.com',
         '/maps/api/geocode/json',
-        {'address': address, 'key': 'AIzaSyCLQTG59usHzrIRrkQwmb8Pzu8OMqsa7ho'},
+        {'address': address, 'key': apiKey},
       );
       final http.Response response = await http.get(uri);
       final decodedResponse = json.decode(response.body);
@@ -75,7 +76,7 @@ class _LocationInputState extends State<LocationInput> {
     }
     if (mounted) {
       final StaticMapProvider staticMapViewProvider =
-          StaticMapProvider('AIzaSyB6Oab_LG3KeeMu7Q9frZk93VtEmWtUJpA');
+          StaticMapProvider(apiKey);
       final Uri staticMapUri = staticMapViewProvider.getStaticUriWithMarkers([
         Marker('position', 'Position', _locationData.latitude,
             _locationData.longitude)
@@ -99,7 +100,7 @@ class _LocationInputState extends State<LocationInput> {
       '/maps/api/geocode/json',
       {
         'latlng': '${lat.toString()},${lng.toString()}',
-        'key': 'AIzaSyB6Oab_LG3KeeMu7Q9frZk93VtEmWtUJpA'
+        'key': apiKey
       },
     );
     final http.Response response = await http.get(uri);
@@ -128,7 +129,7 @@ class _LocationInputState extends State<LocationInput> {
               content: Text('Please add an adress manually!'),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Okey'),
+                  child: Text('Okay'),
                   onPressed: () {
                     Navigator.pop(context);
                   },

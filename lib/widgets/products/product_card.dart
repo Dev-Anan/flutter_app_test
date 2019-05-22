@@ -27,7 +27,9 @@ class ProductCard extends StatelessWidget {
               width: 8.0,
             ),
           ),
-          PriceTag(product.price.toString())
+          Flexible(
+            child: PriceTag(product.price.toString()),
+          )
         ],
       ),
     );
@@ -44,7 +46,8 @@ class ProductCard extends StatelessWidget {
                 color: Theme.of(context).accentColor,
                 onPressed: () {
                   model.selectProduct(product.id);
-                  Navigator.pushNamed<bool>(context, '/product/' + product.id)
+                  Navigator
+                      .pushNamed<bool>(context, '/product/' + product.id)
                       .then((_) => model.selectProduct(null));
                 },
               ),
@@ -54,8 +57,8 @@ class ProductCard extends StatelessWidget {
                     : Icons.favorite_border),
                 color: Colors.red,
                 onPressed: () {
-                  // model.selectProduct(product.id);
-                  model.toggleProductFavoriteStatus(product);
+                  model.selectProduct(product.id);
+                  model.toggleProductFavoriteStatus();
                 },
               ),
             ]);
@@ -78,6 +81,9 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           _buildTitlePriceRow(),
+          SizedBox(
+            height: 10.0,
+          ),
           AddressTag(product.location.address),
           _buildActionButtons(context)
         ],
