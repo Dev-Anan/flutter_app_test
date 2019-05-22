@@ -14,6 +14,8 @@ PODS:
     - GoogleMaps
   - shared_preferences (0.0.1):
     - Flutter
+  - url_launcher (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
@@ -21,6 +23,7 @@ DEPENDENCIES:
   - location (from `.symlinks/plugins/location/ios`)
   - map_view (from `.symlinks/plugins/map_view/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -37,6 +40,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/map_view/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
@@ -45,6 +50,7 @@ SPEC CHECKSUMS:
   location: 26c90953ad5916331d0d1d913898779910416487
   map_view: 9653e5e5b090355507a711908240eb353566b616
   shared_preferences: 5a1d487c427ee18fcd3ea1f2a131569481834b53
+  url_launcher: 92b89c1029a0373879933c21642958c874539095
 
 PODFILE CHECKSUM: aff02bfeed411c636180d6812254b2daeea14d09
 
