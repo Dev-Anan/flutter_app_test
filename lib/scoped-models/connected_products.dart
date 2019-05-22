@@ -168,7 +168,7 @@ mixin ProductsModel on ConnectedProductsModel {
         print('Upload failed!');
         return false;
       }
-      
+
       imageUrl = uploadData['imageUrl'];
       imagePath = uploadData['imagePath'];
     }
@@ -319,6 +319,7 @@ mixin ProductsModel on ConnectedProductsModel {
       _products[selectedProductIndex] = updatedProduct;
       notifyListeners();
     }
+    _selProductId = null;
   }
 
   void selectProduct(String productId) {
@@ -429,6 +430,7 @@ mixin UserModel on ConnectedProductsModel {
     _authenticatedUser = null;
     _authTimer.cancel();
     _userSubject.add(false);
+    _selProductId = null;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
     prefs.remove('userEmail');
