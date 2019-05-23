@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:map_view/map_view.dart';
@@ -13,11 +16,11 @@ import './widgets/helpers/custom_route.dart';
 import './shared/global_config.dart';
 import './shared/adaptive_theme.dart';
 
-void main() { 
+void main() {
   // debugPaintSizeEnabled = true;
   // debugPaintBaselinesEnabled = true;
   // debugPaintPointersEnabled = true;
-   MapView.setApiKey(apiKey);
+  MapView.setApiKey(apiKey);
   runApp(MyApp());
 }
 
@@ -30,7 +33,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final MainModel _model = MainModel();
+  final _platformChannel = MethodChannel('flutter-my-app.com/battery');
   bool _isAuthenticated = false;
+
+  Future<Null> _getBatteryLevel() async {
+    String batteryLevel;
+    try {
+      final int result = await _platformChannel.invokeMethod('getBatteryLevel');
+      batteryLevel = 'Battery level is $result %.';
+    } catch (error) {
+      batteryLevel = 'Failed to get battery level.';
+      print(error);
+    }
+    print(batteryLevel);
+  }
 
   @override
   void initState() {
@@ -40,6 +56,7 @@ class _MyAppState extends State<MyApp> {
         _isAuthenticated = isAuthenticated;
       });
     });
+    _getBatteryLevel();
     super.initState();
   }
 
